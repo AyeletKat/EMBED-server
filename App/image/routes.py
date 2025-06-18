@@ -18,8 +18,7 @@ def get_image_metadata(patient_id):
         if isinstance(metadata, tuple):
             return abort(metadata[1], description=metadata[0])
         metadata["uid"] = uid
-        metadata["imageFormat"] = image_format
-        
+        metadata["imageFormat"] = image_format    
         images_metadata.append(metadata)
         image_count += 1
 

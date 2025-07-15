@@ -28,3 +28,6 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+data/EMBED_OpenData_clinical.csv
+.gitignore
+data/EMBED_OpenData_metadata.csv

@@ -15,7 +15,7 @@ df_metadata_reduced = pd.read_csv(metadata_reduced_csv_path)
 
 merged = pd.merge(
     df_clinical,
-    df_metadata_reduced,
+    df_metadata,
     on=['empi_anon', 'acc_anon'],
     how='inner'
 )

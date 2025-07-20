@@ -13,21 +13,23 @@ df_clinical = pd.read_csv(clinical_csv_path)
 df_metadata_reduced = pd.read_csv(metadata_reduced_csv_path)
 
 
-merged = pd.merge(
-    df_clinical,
-    df_metadata,
-    on=['empi_anon', 'acc_anon'],
-    how='inner'
-)
+# merged = pd.merge(
+#     df_clinical,
+#     df_metadata,
+#     on=['empi_anon', 'acc_anon'],
+#     how='inner'
+# )
 
-condition = (
-    merged['side'].isin(['B', 'NaN']) |
-    (merged['ImageLateralityFinal'] == merged['side'])
-)
-result = merged[condition]
-#TODO choose wanted columns
-result = result[['empi_anon', 'acc_anon', 'ImageLateralityFinal', 'side']]
-# Transpose, drop duplicate rows (i.e. duplicate columns), then transpose back
-result = result.T.drop_duplicates().T
-print(result.head(100))
+# condition = (
+#     merged['side'].isin(['B', 'NaN']) |
+#     (merged['ImageLateralityFinal'] == merged['side'])
+# )
+# result = merged[condition]
+# #TODO choose wanted columns
+# result = result[['empi_anon', 'acc_anon', 'ImageLateralityFinal', 'side']]
+# # Transpose, drop duplicate rows (i.e. duplicate columns), then transpose back
+# result = result.T.drop_duplicates().T
+# print(result.head(100))
 
+ex1 = df_clinical["path_severity"].drop_duplicates()
+print(ex1)

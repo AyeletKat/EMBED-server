@@ -12,3 +12,5 @@ IMAGE_PATH: list[str] = ["anon_dicom_path", "png_path", "png_filename"]
 #         return json.load(f)
 
 # config = load_config()
+
+# hello test

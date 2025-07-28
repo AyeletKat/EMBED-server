@@ -2,17 +2,18 @@ import pandas as pd
 import re
 import os
 import json
-from App.config import FILTERS, ABNORMALITY_FILTERS, metadata_csv_path, clinical_csv_path
+from App.config import FILTERS, ABNORMALITY_FILTERS, metadata_csv_path, clinical_csv_path, CLIMICAL_IMAGE_DATA, METADATA_IMAGE_DATA
 class DataManager:
     def __init__(self):
         df_metadata = pd.read_csv(metadata_csv_path)
         df_clinical = pd.read_csv(clinical_csv_path)
-        merged_df = self.merged_data(df_metadata, df_clinical)
+        merged_df = self.merged_data()
     
-    def merged_data(df_metadata, df_clinical):
+    @staticmethod
+    def merged_data(self):
         merged = pd.merge(
-            df_clinical,
-            df_metadata,
+            self.df_clinical,
+            self.df_metadata,
             on=['empi_anon', 'acc_anon'],
             how='inner'
         )
@@ -66,48 +67,22 @@ class DataManager:
 
     def get_patient_ids(self):
         return self.df["patient_id"].unique().tolist()
-        
-    def get_patients_data(self, keys_format: str = "camel", include_file_path : bool = False, patient_id = None):
-        """
-        Get data for all patients
 
-        Parameters
-        ----------
-        keys_format: str
-            The format of the keys in the data. Options are "camel", "snake", "camel_space", "upper-snake"
-        include_file_path: bool
-            Whether to include the file path columns in the data
-        patient_id: str
-            The patient id to get data for. If None, data for all patients is returned
-        
-        Returns
-        -------
-        dict
-            The data for all patients
-        """
-
-        patients_data = self.df
-
-        if patient_id:
-            patients_data = patients_data[patients_data["patient_id"] == patient_id]
-
-        if not include_file_path:
-            patients_data = patients_data[[col for col in patients_data.columns if "file_path" not in col]]
-        
-        patients_data = patients_data.dropna(axis=1, how="any")
-        patients_data = patients_data.rename(columns={col: self.convert_key_format(col, keys_format) for col in self.df.columns})
-
+    # TODO: I was fixing this function (using google colab)
+    def get_patients_data(self):
+        patients_data = self.merged_df
+        patients_data = patients_data.rename(columns={col: self.convert_key_format(col, "camel") for col in self.merged_df.columns})
         patients_dict = {}
-        grouped = patients_data.groupby(self.convert_key_format('patient_id', keys_format))
+        grouped = patients_data.groupby(self.convert_key_format('empi_anon', "camel"))
 
         for p_id, group in grouped:
             patient_list = [
-                {k: v for k, v in row.items() if pd.notnull(v) and k != self.convert_key_format('patient_id', keys_format)}
+                {k: v for k, v in row.items() if pd.notnull(v) and k != self.convert_key_format('patient_id', "camel")}
                 for row in group.to_dict(orient='records')
             ]
             patients_dict[p_id] = patient_list
-
         return patients_dict
+
     
     def filter_patients(self, filters):
         """

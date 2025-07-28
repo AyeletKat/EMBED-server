@@ -4,7 +4,7 @@ from App import series_mng
 images_bp = Blueprint('images', __name__)
 
 # Returns the metadata of all images for a specific patient
-# modify it to return the image by empi_anon, acc_anon and side
+# modify it to return the image metadata by empi_anon, acc_anon and side
 @images_bp.route('/<patient_id>/images-metadata', methods=['GET'])
 def get_image_metadata(patient_id):
     image_format = request.args.get('format')

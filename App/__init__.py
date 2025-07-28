@@ -1,14 +1,16 @@
 from flask import Flask
 from App.config import config
 from App.utils import SeriesManager, DataManager
+from App.config import Config
 
 series_mng = SeriesManager()
 data_mng = DataManager()
+config = Config()
 
 def create_app():
     app = Flask(__name__)
     register_blueprints(app)
-    configure_database()
+    DataManager()
     return app
 
 def register_blueprints(app):
@@ -22,6 +24,6 @@ def register_blueprints(app):
     app.register_blueprint(patients_bp, url_prefix='/patients')
 
 
-def configure_database():
-    series_mng.start(config)
-    data_mng.start(config)
+# def configure_database():
+#     series_mng.start(config)
+#     data_mng.start(config)

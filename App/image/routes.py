@@ -3,6 +3,8 @@ from App import series_mng
 
 images_bp = Blueprint('images', __name__)
 
+# Returns the metadata of all images for a specific patient
+# modify it to return the image by empi_anon, acc_anon and side
 @images_bp.route('/<patient_id>/images-metadata', methods=['GET'])
 def get_image_metadata(patient_id):
     image_format = request.args.get('format')
@@ -26,6 +28,8 @@ def get_image_metadata(patient_id):
     response["imageCount"] = image_count
     return jsonify(response), 200
 
+# modify it to return the image by empi_anon, acc_anon and ImageLateralityFinal
+# Returns a specific one image by its series UID and SOP UID
 @images_bp.route('/full', methods=['GET'])
 def get_image():
     series_UID = request.args.get('series_UID')

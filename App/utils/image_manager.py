@@ -51,7 +51,6 @@ download_image_by_name('/mnt/PACS_NAS1/mammo/png/cohort_1/extracted-images/10f16
 # /mnt/PACS_NAS1/mammo/png/cohort_1/extracted-images/10f16c9202719fb63957e0b67c97a7380eff88765e36d6781ec3c43f/b5f0c9a8d05e485b36032a0c3972e6dbeb43076db2270bee7662b3ef/53fcc92b71f21c180291eb394f93ccbb1775f6031e49f7d6886c62fc.png
 
 
-#  2. לראות איזה מטהדאטה כללי שמחזירים לכל תמונה כדאי להחזיר
 
 
 # find minimal and maximal values of acc_anon and empi_anon columns

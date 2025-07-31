@@ -69,6 +69,13 @@ class DataManager:
         return self.df["patient_id"].unique().tolist()
 
     # TODO: I was fixing this function (using google colab)
+    #TODO: add a column PatientID that is empianonaccanonside
+    """
+    The purpose of this function is to return a dictionary where:
+    Each key is a unique patient ID (empi_anon, converted to camelCase).
+    Each value is a list of dictionaries, where each dictionary represents a row of that patient's data (with non-null values), excluding the patient_id field.
+    It organizes and cleans patient data from a merged DataFrame (self.merged_df) for easier access and use per patient.
+    """
     def get_patients_data(self):
         patients_data = self.merged_df
         patients_data = patients_data.rename(columns={col: self.convert_key_format(col, "camel") for col in self.merged_df.columns})

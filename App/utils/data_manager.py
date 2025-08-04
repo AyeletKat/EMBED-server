@@ -77,18 +77,28 @@ class DataManager:
     Each value is a list of dictionaries, where each dictionary represents a row of that patient's data (with non-null values), excluding the patient_id field.
     It organizes and cleans patient data from a merged DataFrame (self.merged_df) for easier access and use per patient.
     """
-    def get_patients_data(self):
-        patients_data = self.merged_df
-        patients_data = patients_data.rename(columns={col: self.convert_key_format(col, "camel") for col in self.merged_df.columns})
+    def get_patients_data(self, keys_format="camel", include_file_path=False, patient_id=None):
+        patients_data = self.df
+
+        if patient_id:
+            patients_data = patients_data[patients_data["patient_id"] == patient_id]
+
+        if not include_file_path:
+            patients_data = patients_data[[col for col in patients_data.columns if "file_path" not in col]]
+        
+        patients_data = patients_data.dropna(axis=1, how="any")
+        patients_data = patients_data.rename(columns={col: self.convert_key_format(col, keys_format) for col in self.df.columns})
+
         patients_dict = {}
-        grouped = patients_data.groupby(self.convert_key_format('empi_anon', "camel"))
+        grouped = patients_data.groupby(self.convert_key_format('patient_id', keys_format))
 
         for p_id, group in grouped:
             patient_list = [
-                {k: v for k, v in row.items() if pd.notnull(v) and k != self.convert_key_format('patient_id', "camel")}
+                {k: v for k, v in row.items() if pd.notnull(v) and k != self.convert_key_format('patient_id', keys_format)}
                 for row in group.to_dict(orient='records')
             ]
             patients_dict[p_id] = patient_list
+
         return patients_dict
 
     

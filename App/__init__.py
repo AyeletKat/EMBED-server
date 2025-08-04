@@ -1,9 +1,7 @@
 from flask import Flask
-from App.config import config
-from App.utils import SeriesManager, DataManager
+from App.utils import DataManager
 from App.config import Config
 
-series_mng = SeriesManager()
 data_mng = DataManager()
 config = Config()
 

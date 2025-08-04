@@ -11,11 +11,11 @@ def patients():
     response = data_mng.get_patients_data()
     return jsonify(response), 200
 
-# # ?
-# @patients_bp.route('/<patient_id>', methods=['GET'])
-# def patient(patient_id):
-#     response = data_mng.get_patients_data("camel", False,patient_id)
-#     return jsonify(response), 200
+# ?
+@patients_bp.route('/<patient_id>', methods=['GET'])
+def patient(patient_id):
+    response = data_mng.get_patients_data("camel", False,patient_id)
+    return jsonify(response), 200
 
 # change it to return the empi_anon, acc_anon and side of the images by the filters
 @patients_bp.route('/filter', methods=['GET'])

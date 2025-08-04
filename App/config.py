@@ -7,7 +7,7 @@ class Config:
     METADATA_IMAGE_DATA: list[str] = ["series_description", "num_roi", "png_filename"]   #TODO check the values each filter can get    
     IMAGE_PATH: list[str] = ["anon_dicom_path", "png_path", "png_filename"]
 
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    BASE_DIR = os.path.dirname(os.path.dirname(__file__))
     metadata_csv_path = os.path.join(BASE_DIR, "data", "EMBED_OpenData_metadata.csv")
     clinical_csv_path = os.path.join(BASE_DIR, "data", "EMBED_OpenData_clinical.csv")
 

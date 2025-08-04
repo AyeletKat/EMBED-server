@@ -44,7 +44,7 @@ def download_image_by_name(png_name):
         print(f"Error downloading {png_name}: {e}")
 
 # Example usage:
-download_image_by_name('/mnt/PACS_NAS1/mammo/png/cohort_1/extracted-images/10f16c9202719fb63957e0b67c97a7380eff88765e36d6781ec3c43f/b5f0c9a8d05e485b36032a0c3972e6dbeb43076db2270bee7662b3ef/53fcc92b71f21c180291eb394f93ccbb1775f6031e49f7d6886c62fc.png')
+# download_image_by_name('/mnt/PACS_NAS1/mammo/png/cohort_1/extracted-images/10f16c9202719fb63957e0b67c97a7380eff88765e36d6781ec3c43f/b5f0c9a8d05e485b36032a0c3972e6dbeb43076db2270bee7662b3ef/53fcc92b71f21c180291eb394f93ccbb1775f6031e49f7d6886c62fc.png')
 
 
 # /mnt/PACS_NAS1/mammo/png/cohort_1/extracted-images/38b0d72c577237bb5505103e0d9091fe8daa9a1a3a027a72933bef28/044795bfdbd82421d0032132bbfaa9d17d94465619d2581107899595/eed16a2c17f81f82ea8381ff17a23f57df0c4978624d265a1d7ce96a.png
@@ -91,7 +91,7 @@ def find_longest_common_suffix(file_path):
     
     return longest_suffix
 # Example usage:
-file_path = 'EMBED_OpenData_metadata.csv'
+# file_path = 'EMBED_OpenData_metadata.csv'
 # longest_suffix = find_longest_common_suffix(file_path)
 # print(f"Longest common suffix in acc_anon: {longest_suffix}")
 
@@ -106,7 +106,7 @@ def find_non_suffix_value(file_path):
     
     return None  # If all values end with "000000.00"
 # Example usage:
-file_path = 'EMBED_OpenData_metadata.csv'
+# file_path = 'EMBED_OpenData_metadata.csv'
 # non_suffix_value = find_non_suffix_value(file_path)
 # print(f"Value in acc_anon that doesn't end with '000000.00': {non_suffix_value}")
 

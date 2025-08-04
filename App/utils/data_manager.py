@@ -2,14 +2,15 @@ import pandas as pd
 import re
 import os
 import json
-from App.config import FILTERS, ABNORMALITY_FILTERS, metadata_csv_path, clinical_csv_path, CLIMICAL_IMAGE_DATA, METADATA_IMAGE_DATA
+from App.config import Config
 class DataManager:
+    conf = Config()
     def __init__(self):
-        df_metadata = pd.read_csv(metadata_csv_path)
-        df_clinical = pd.read_csv(clinical_csv_path)
+        # add index to metadata - uniwue value to image. return the indexes of the function that went through the filters.
+        self.df_metadata = pd.read_csv(self.conf.metadata_csv_path)
+        self.df_clinical = pd.read_csv(self.conf.clinical_csv_path)
         merged_df = self.merged_data()
     
-    @staticmethod
     def merged_data(self):
         merged = pd.merge(
             self.df_clinical,
@@ -56,9 +57,9 @@ class DataManager:
     
     def get_unique_values(self, collection: str, keys_format = "camel"):
         if collection == "common":
-            columns = FILTERS
+            columns = self.conf.FILTERS
         elif collection == "distinct":
-            columns = ABNORMALITY_FILTERS
+            columns = self.conf.ABNORMALITY_FILTERS
         unique_values = {col: set() for col in columns}
         for col in columns:
                 unique_values[col].update(self.df_clinical[col].dropna().unique())     

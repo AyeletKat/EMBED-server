@@ -78,8 +78,7 @@ class DataManager:
         unique_values = {col: set() for col in columns}
 
         for col in columns:
-            if col in self.merged_df.columns:
-                unique_values[col].update(self.merged_df[col].dropna().unique())
+            unique_values[col].update(self.merged_df[col].dropna().unique())
             
         unique_values = {self.convert_key_format(k, keys_format): sorted(list(v)) for k, v in unique_values.items()}
         return unique_values
@@ -159,8 +158,9 @@ class DataManager:
     
         return filtered_df['patient_id'].unique().tolist()
 
-dm = DataManager()
-for fil in Config.FILTERS:
-    print(f"{fil}")
-    unique_values = dm.merged_df[fil].unique()
-    print(unique_values)
+# DEBUG
+# dm = DataManager()
+# for fil in Config.ABNORMALITY_FILTERS:
+#     print(f"{fil}")
+#     unique_values = dm.merged_df[fil].unique()
+#     print(unique_values)

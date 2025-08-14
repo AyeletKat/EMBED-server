@@ -13,7 +13,6 @@ def filter_options():
     print("filter options:", res_str)
     return jsonify(res_str), 200
 
-#returns the unique values for each abnormality (pink) filter
 @filter_bp.route('/abnormality-options', methods=['GET'])
 def filter_options_mass():
     response = data_mng.get_unique_values("distinct")

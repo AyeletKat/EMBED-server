@@ -3,16 +3,20 @@ from flask import Flask
 from App.filter.routes import filter_bp
 import json
 
-class FilterOptionsTest(unittest.TestCase):
+class FilterRouteTest(unittest.TestCase):
     def setUp(self):
         self.app = Flask(__name__)
         self.app.register_blueprint(filter_bp)
         self.client = self.app.test_client()
 
+    def check_equality(self, data, expected_data):
+        for key, expected_values in expected_data.items():
+            self.assertIn(key, data)
+            self.assertEqual(set(data[key]), set(expected_values))
+
     def test_filter_options_route(self):
         response = self.client.get('/options')
-        data = json.loads(json.loads(response.data))  # decode twice in one line
-        print("Response data:", data)
+        data = json.loads(json.loads(response.data)) 
 
         expected_data = {
             "asses": ["A", "B", "K", "M", "N", "P", "S", "X"], 
@@ -22,9 +26,21 @@ class FilterOptionsTest(unittest.TestCase):
             "pathSeverity": [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]
         }
 
-        for key, expected_values in expected_data.items():
-            self.assertIn(key, data)
-            self.assertEqual(set(data[key]), set(expected_values))
+        self.check_equality(data, expected_data)
+    
+    def test_abnormality_options_route(self):
+        response = self.client.get('/abnormality-options')
+        data = json.loads(json.loads(response.data))
+
+        expected_data = {
+            "tissueden": [1.0, 2.0, 3.0, 4.0, 5.0],
+            "massshape": ["S", "F", "O", "G", "B", "L", "R", "A", "X", "Q", "N", "Y", "V", "T", "M"],
+            "massmargin": ["D", "U", "I", "S", "M"],
+            "calcdistri": ['G', 'R', 'C', 'D', 'S', 'L']
+        }
+        
+        self.check_equality(data, expected_data)
 
 if __name__ == '__main__':
     unittest.main()
+

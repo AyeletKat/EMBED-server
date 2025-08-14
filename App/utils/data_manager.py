@@ -83,8 +83,8 @@ class DataManager:
         unique_values = {self.convert_key_format(k, keys_format): sorted(list(v)) for k, v in unique_values.items()}
         return unique_values
 
-    def get_patient_ids(self):
-        return self.df["patient_id"].unique().tolist()
+    def get_image_ids(self):
+        return self.merged_df["image_id"].unique().tolist()
         
     def get_patients_data(self, keys_format: str = "camel", include_file_path : bool = False, patient_id = None):
         """
@@ -150,7 +150,7 @@ class DataManager:
                 merged_filters[filter_key_formatted] = value[filter_key]
 
         if not merged_filters:
-            return self.get_patient_ids()
+            return self.get_image_ids()
         
         for column, values in merged_filters.items():
             if column in self.df.columns:

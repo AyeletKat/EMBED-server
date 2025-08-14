@@ -16,6 +16,8 @@ class FilterRouteTest(unittest.TestCase):
 
     def test_filter_options_route(self):
         response = self.client.get('/options')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.data)
         data = json.loads(json.loads(response.data)) 
 
         expected_data = {
@@ -30,6 +32,8 @@ class FilterRouteTest(unittest.TestCase):
     
     def test_abnormality_options_route(self):
         response = self.client.get('/abnormality-options')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.data)
         data = json.loads(json.loads(response.data))
 
         expected_data = {
@@ -40,6 +44,16 @@ class FilterRouteTest(unittest.TestCase):
         }
         
         self.check_equality(data, expected_data)
+
+    def test_numbers_endpoint(self):
+        response = self.client.get('/image-ids')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.data)
+        data = json.loads(json.loads(response.data))  # decode JSON if double-encoded
+        image_ids = set(data["imageIds"])  # convert to set to ignore order
+        expected_ids = set(range(0, 152607))  
+        self.assertEqual(image_ids, expected_ids)
+
 
 if __name__ == '__main__':
     unittest.main()

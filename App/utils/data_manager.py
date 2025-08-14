@@ -9,7 +9,10 @@ class DataManager:
         # add index to metadata - uniwue value to image. return the indexes of the function that went through the filters.
         self.df_metadata = pd.read_csv(self.conf.metadata_csv_path)
         self.df_clinical = pd.read_csv(self.conf.clinical_csv_path)
-        merged_df = self.merged_data()
+        self.merged_df = self.merged_data()
+        self.merged_df = self.merged_df.drop_duplicates(subset="png_path", keep="first")
+        self.merged_df["image_id"] = pd.factorize(self.merged_df["png_path"])[0]
+        print(self.merged_df.head())
     
     def merged_data(self):
         merged = pd.merge(
@@ -25,7 +28,7 @@ class DataManager:
         )
         merged_df = merged[condition]
         return merged_df
-
+    
     @staticmethod
     def convert_key_format(key, keys_format = "camel"):
         """
@@ -53,31 +56,56 @@ class DataManager:
             return re.sub(r'([A-Z])', lambda x: '_' + x.group(1), key).upper()
         else:
             raise ValueError("Invalid keys_format. Options are 'camel', 'snake', 'camel_space', 'upper-snake'")
+
+    def set_calc_df(self):
+        self.calc_df = self.get_df(self.config["calc_file_path"])
+
+    def set_mass_df(self):
+        self.mass_df = self.get_df(self.config["mass_file_path"])
     
-    
-    def get_unique_values(self, collection: str, keys_format = "camel"):
+    def set_df(self):
+        self.df = pd.merge(self.calc_df, self.mass_df, how="outer")
+
+    def get_columns(self, collection : str, include_file_path : bool = False):
         if collection == "common":
-            columns = self.conf.FILTERS
+            columns = Config.FILTERS
         elif collection == "distinct":
-            columns = self.conf.ABNORMALITY_FILTERS
+            columns = Config.ABNORMALITY_FILTERS
+        return columns
+    
+    def get_unique_values(self, collection: str, keys_format = "camel", include_file_path : bool = False):
+        columns = self.get_columns(collection, include_file_path)
         unique_values = {col: set() for col in columns}
+
         for col in columns:
-                unique_values[col].update(self.df_clinical[col].dropna().unique())     
+            if col in self.merged_df.columns:
+                unique_values[col].update(self.merged_df[col].dropna().unique())
+            
         unique_values = {self.convert_key_format(k, keys_format): sorted(list(v)) for k, v in unique_values.items()}
         return unique_values
 
     def get_patient_ids(self):
         return self.df["patient_id"].unique().tolist()
+        
+    def get_patients_data(self, keys_format: str = "camel", include_file_path : bool = False, patient_id = None):
+        """
+        Get data for all patients
 
-    # TODO: I was fixing this function (using google colab)
-    #TODO: add a column PatientID that is empianonaccanonside
-    """
-    The purpose of this function is to return a dictionary where:
-    Each key is a unique patient ID (empi_anon, converted to camelCase).
-    Each value is a list of dictionaries, where each dictionary represents a row of that patient's data (with non-null values), excluding the patient_id field.
-    It organizes and cleans patient data from a merged DataFrame (self.merged_df) for easier access and use per patient.
-    """
-    def get_patients_data(self, keys_format="camel", include_file_path=False, patient_id=None):
+        Parameters
+        ----------
+        keys_format: str
+            The format of the keys in the data. Options are "camel", "snake", "camel_space", "upper-snake"
+        include_file_path: bool
+            Whether to include the file path columns in the data
+        patient_id: str
+            The patient id to get data for. If None, data for all patients is returned
+        
+        Returns
+        -------
+        dict
+            The data for all patients
+        """
+
         patients_data = self.df
 
         if patient_id:
@@ -100,7 +128,6 @@ class DataManager:
             patients_dict[p_id] = patient_list
 
         return patients_dict
-
     
     def filter_patients(self, filters):
         """
@@ -132,8 +159,8 @@ class DataManager:
     
         return filtered_df['patient_id'].unique().tolist()
 
-    # def start(self, config):
-    #     self.set_config(config)
-    #     self.set_calc_df()
-    #     self.set_mass_df()
-    #     self.set_df()
+dm = DataManager()
+for fil in Config.FILTERS:
+    print(f"{fil}")
+    unique_values = dm.merged_df[fil].unique()
+    print(unique_values)

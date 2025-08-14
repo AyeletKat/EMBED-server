@@ -12,11 +12,12 @@ def patients():
     # return jsonify(response), 200
     return 200
 
-# ?
-@patients_bp.route('/<patient_id>', methods=['GET'])
-def patient(patient_id):
-    response = data_mng.get_patients_data("camel", False,patient_id)
+#  CLINICAL_IMAGE_DATA
+@patients_bp.route('/<image_id>', methods=['GET'])
+def patient(image_id):
+    response = data_mng.get_patients_data("camel", False, image_id)
     return jsonify(response), 200
+
 
 @patients_bp.route('/filter', methods=['GET'])
 def filter_images():

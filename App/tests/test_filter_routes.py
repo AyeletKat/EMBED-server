@@ -25,7 +25,10 @@ class FilterRouteTest(unittest.TestCase):
             "side": ["B", "L", "R"], 
             "massdens": ["+", "-", "0", "="], 
             "type": ["B", "S"], 
-            "pathSeverity": [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]
+            "pathSeverity": [0.0, 1.0, 2.0, 3.0, 4.0, 5.0],
+            "ViewPosition": ['MLO', 'CC', 'XCCL', 'ML', 'LM', 'CV', 'XCCM', 'RL', 'RM',
+                 'AT', 'FB', 'TAN', 'CCID', 'MLOID', 'SIO', 'MLID', 
+                 'SPECIMEN', 'LMO', 'LMID']
         }
 
         self.check_equality(data, expected_data)

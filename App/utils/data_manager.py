@@ -57,14 +57,14 @@ class DataManager:
         else:
             raise ValueError("Invalid keys_format. Options are 'camel', 'snake', 'camel_space', 'upper-snake'")
 
-    def set_calc_df(self):
-        self.calc_df = self.get_df(self.config["calc_file_path"])
+    # def set_calc_df(self):
+    #     self.calc_df = self.get_df(self.config["calc_file_path"])
 
-    def set_mass_df(self):
-        self.mass_df = self.get_df(self.config["mass_file_path"])
+    # def set_mass_df(self):
+    #     self.mass_df = self.get_df(self.config["mass_file_path"])
     
-    def set_df(self):
-        self.df = pd.merge(self.calc_df, self.mass_df, how="outer")
+    # def set_df(self):
+    #     self.df = pd.merge(self.calc_df, self.mass_df, how="outer")
 
     def get_columns(self, collection : str, include_file_path : bool = False):
         if collection == "common":
@@ -86,63 +86,50 @@ class DataManager:
     def get_image_ids(self):
         return self.merged_df["image_id"].unique().tolist()
         
-    def get_patients_data(self, keys_format: str = "camel", include_file_path : bool = False, patient_id = None):
-        """
-        Get data for all patients
+    # def get_patients_data(self, keys_format: str = "camel", include_file_path : bool = False, patient_id = None):
+    #     """
+    #     Get data for all patients
 
-        Parameters
-        ----------
-        keys_format: str
-            The format of the keys in the data. Options are "camel", "snake", "camel_space", "upper-snake"
-        include_file_path: bool
-            Whether to include the file path columns in the data
-        patient_id: str
-            The patient id to get data for. If None, data for all patients is returned
+    #     Parameters
+    #     ----------
+    #     keys_format: str
+    #         The format of the keys in the data. Options are "camel", "snake", "camel_space", "upper-snake"
+    #     include_file_path: bool
+    #         Whether to include the file path columns in the data
+    #     patient_id: str
+    #         The patient id to get data for. If None, data for all patients is returned
         
-        Returns
-        -------
-        dict
-            The data for all patients
-        """
+    #     Returns
+    #     -------
+    #     dict
+    #         The data for all patients
+    #     """
 
-        patients_data = self.df
+    #     patients_data = self.df
 
-        if patient_id:
-            patients_data = patients_data[patients_data["patient_id"] == patient_id]
+    #     if patient_id:
+    #         patients_data = patients_data[patients_data["patient_id"] == patient_id]
 
-        if not include_file_path:
-            patients_data = patients_data[[col for col in patients_data.columns if "file_path" not in col]]
+    #     if not include_file_path:
+    #         patients_data = patients_data[[col for col in patients_data.columns if "file_path" not in col]]
         
-        patients_data = patients_data.dropna(axis=1, how="any")
-        patients_data = patients_data.rename(columns={col: self.convert_key_format(col, keys_format) for col in self.df.columns})
+    #     patients_data = patients_data.dropna(axis=1, how="any")
+    #     patients_data = patients_data.rename(columns={col: self.convert_key_format(col, keys_format) for col in self.df.columns})
 
-        patients_dict = {}
-        grouped = patients_data.groupby(self.convert_key_format('patient_id', keys_format))
+    #     patients_dict = {}
+    #     grouped = patients_data.groupby(self.convert_key_format('patient_id', keys_format))
 
-        for p_id, group in grouped:
-            patient_list = [
-                {k: v for k, v in row.items() if pd.notnull(v) and k != self.convert_key_format('patient_id', keys_format)}
-                for row in group.to_dict(orient='records')
-            ]
-            patients_dict[p_id] = patient_list
+    #     for p_id, group in grouped:
+    #         patient_list = [
+    #             {k: v for k, v in row.items() if pd.notnull(v) and k != self.convert_key_format('patient_id', keys_format)}
+    #             for row in group.to_dict(orient='records')
+    #         ]
+    #         patients_dict[p_id] = patient_list
 
-        return patients_dict
+    #     return patients_dict
     
     def filter_patients(self, filters):
-        """
-        Filter patients data
-
-        Parameters
-        ----------
-        filters: dict
-            The filters to apply to the data
-        
-        Returns
-        -------
-        dict
-            The filtered data
-        """
-        filtered_df = self.df
+        filtered_df = self.merged_df
         merged_filters = {}
         for key, value in filters.items():
             for filter_key in value:
@@ -153,14 +140,7 @@ class DataManager:
             return self.get_image_ids()
         
         for column, values in merged_filters.items():
-            if column in self.df.columns:
+            if column in self.merged_df.columns:
                 filtered_df = filtered_df[filtered_df[column].isin(values)]
     
-        return filtered_df['patient_id'].unique().tolist()
-
-# DEBUG
-# dm = DataManager()
-# for fil in Config.ABNORMALITY_FILTERS:
-#     print(f"{fil}")
-#     unique_values = dm.merged_df[fil].unique()
-#     print(unique_values)
+        return filtered_df['image_id'].unique().tolist()

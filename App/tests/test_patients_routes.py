@@ -9,10 +9,10 @@ class FilterRouteTest(unittest.TestCase):
         self.app.register_blueprint(patients_bp)
         self.client = self.app.test_client()
     
-    def check_equal(self, data, expected):
+    def check_equal(self, actual, expected):
         for key, expected_value in expected.items():
-            self.assertIn(key, data[0])
-            self.assertEqual(data[0][key], expected_value)
+            self.assertIn(key, actual, f"Key '{key}' missing in response")
+            self.assertEqual(str(actual[key]) if actual[key] is not None else None, expected_value)
     # def test_filter_images(self):
 
     #     filters = {
@@ -54,7 +54,7 @@ class FilterRouteTest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
         expected = {
-            "imageId": 0,
+            "image_id": 0,
             "empiAnon": "60696029",
             "accAnon": "8099128854014801",
             "tissueden": "3.0",

@@ -15,7 +15,7 @@ def patients():
 #  CLINICAL_IMAGE_DATA
 @patients_bp.route('/<image_id>', methods=['GET'])
 def patient(image_id):
-    response = data_mng.get_patients_data("camel", False, image_id)
+    response = data_mng.get_patients_data("camel", False, int(image_id))
     return jsonify(response), 200
 
 

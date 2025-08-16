@@ -12,41 +12,41 @@ class FilterRouteTest(unittest.TestCase):
     def check_equal(self, actual, expected):
         for key, expected_value in expected.items():
             self.assertIn(key, actual, f"Key '{key}' missing in response")
-            self.assertEqual(str(actual[key]) if actual[key] is not None else None, expected_value)
-    # def test_filter_images(self):
+            self.assertEqual(actual[key], expected_value)
+    def test_filter_images(self):
 
-    #     filters = {
-    #         "massshape": {"massshape": ["O"]},
-    #         "massmargin": {"massmargin": ["U"]}
-    #     }
+        filters = {
+            "massshape": {"massshape": ["O"]},
+            "massmargin": {"massmargin": ["U"]}
+        }
 
-    #     response = self.client.get('/filter', query_string={'filters': json.dumps(filters)})
-    #     self.assertEqual(response.status_code, 200)
-    #     data = json.loads(json.loads(response.data))  # decode twice like your other tests
-    #     self.assertIn(9, data['imageIds'])
+        response = self.client.get('/filter', query_string={'filters': json.dumps(filters)})
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(json.loads(response.data))  # decode twice like your other tests
+        self.assertIn(9, data['imageIds'])
 
-    #     filters = {
-    #         "massmargin": {"massmargin": ["D"]}
-    #     }
+        filters = {
+            "massmargin": {"massmargin": ["D"]}
+        }
 
-    #     response = self.client.get('/filter', query_string={"filters": json.dumps(filters)})
-    #     self.assertEqual(response.status_code, 200)
-    #     data = json.loads(json.loads(response.data))
-    #     self.assertIn(0, data["imageIds"])
-    #     self.assertIn(1, data["imageIds"])
-    #     self.assertIn(2, data["imageIds"]) 
+        response = self.client.get('/filter', query_string={"filters": json.dumps(filters)})
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(json.loads(response.data))
+        self.assertIn(0, data["imageIds"])
+        self.assertIn(1, data["imageIds"])
+        self.assertIn(2, data["imageIds"]) 
 
-    #     filters = {
-    #         "asses": {"asses": ["P"]},
-    #         "calcdistri": {"calcdistri": ["G"]},
-    #         "side": {"side": ["R"]}
-    #     }
+        filters = {
+            "asses": {"asses": ["P"]},
+            "calcdistri": {"calcdistri": ["G"]},
+            "side": {"side": ["R"]}
+        }
 
-    #     response = self.client.get('/filter', query_string={"filters": json.dumps(filters)})
-    #     self.assertEqual(response.status_code, 200)
-    #     data = json.loads(json.loads(response.data))
-    #     self.assertIn(16, data["imageIds"])
-    #     self.assertIn(17, data["imageIds"])
+        response = self.client.get('/filter', query_string={"filters": json.dumps(filters)})
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(json.loads(response.data))
+        self.assertIn(16, data["imageIds"])
+        self.assertIn(17, data["imageIds"])
 
     def test_filter_images_with_id(self):
         test_image_id = "0"
@@ -54,20 +54,17 @@ class FilterRouteTest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
         expected = {
-            "image_id": 0,
-            "empiAnon": "60696029",
-            "accAnon": "8099128854014801",
-            "tissueden": "3.0",
-            "asses": "A",
-            "side": "R",
-            "massshape": "S",
-            "massmargin": "D",
-            "massdens": None,
-            "calcdistri": None,
-            "type": None,
-            "pathSeverity": None
+            '0': [{
+                'empiAnon': 60696029,
+                'accAnon': 8099128854014801,
+                'tissueden': 3.0,
+                'asses': 'A',
+                'side': 'R',
+                'massshape': 'S',
+                'massmargin': 'D'
+            }]
         }
-
+    # TODO after adding validation check in data_manager, add test for non valid image_id
         self.check_equal(data, expected)
     
 

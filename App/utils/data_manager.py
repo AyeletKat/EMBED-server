@@ -12,7 +12,6 @@ class DataManager:
         self.merged_df = self.merged_data()
         self.merged_df = self.merged_df.drop_duplicates(subset="png_path", keep="first")
         self.merged_df["image_id"] = pd.factorize(self.merged_df["png_path"])[0]
-        print(self.merged_df.head())
     
     def merged_data(self):
         merged = pd.merge(
@@ -87,9 +86,9 @@ class DataManager:
         return self.merged_df["image_id"].unique().tolist()
         
     def get_patients_data(self, keys_format: str = "camel", include_file_path : bool = False, image_id = None):
-
+        # TODO add validation check for image_id
         patients_data = self.merged_df[Config.CLINICAL_IMAGE_DATA]
-        if image_id:
+        if image_id is not None:
             patients_data = patients_data[patients_data["image_id"] == image_id]
         patients_data = patients_data.dropna(axis=1, how="any")
         patients_data = patients_data.rename(columns={col: self.convert_key_format(col, keys_format) for col in patients_data.columns})

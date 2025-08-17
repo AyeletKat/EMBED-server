@@ -64,8 +64,12 @@ class FilterRouteTest(unittest.TestCase):
                 'massmargin': 'D'
             }]
         }
-    # TODO after adding validation check in data_manager, add test for non valid image_id
         self.check_equal(data, expected)
+        
+        test_image_id = "10000000"
+        response = self.client.get(f"/{test_image_id}")
+        self.assertEqual(response.status_code, 500)
+
     
 
 if __name__ == '__main__':

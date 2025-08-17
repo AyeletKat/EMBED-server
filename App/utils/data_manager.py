@@ -2,7 +2,10 @@ import pandas as pd
 import re
 import os
 import json
+import boto3
+import os
 from App.config import Config
+
 class DataManager:
     conf = Config()
     def __init__(self):
@@ -56,15 +59,6 @@ class DataManager:
         else:
             raise ValueError("Invalid keys_format. Options are 'camel', 'snake', 'camel_space', 'upper-snake'")
 
-    # def set_calc_df(self):
-    #     self.calc_df = self.get_df(self.config["calc_file_path"])
-
-    # def set_mass_df(self):
-    #     self.mass_df = self.get_df(self.config["mass_file_path"])
-    
-    # def set_df(self):
-    #     self.df = pd.merge(self.calc_df, self.mass_df, how="outer")
-
     def get_columns(self, collection : str, include_file_path : bool = False):
         if collection == "common":
             columns = Config.FILTERS
@@ -86,7 +80,8 @@ class DataManager:
         return self.merged_df["image_id"].unique().tolist()
         
     def get_patients_data(self, keys_format: str = "camel", include_file_path : bool = False, image_id = None):
-        # TODO add validation check for image_id
+        if image_id < 0 or image_id >= len(self.merged_df):
+            raise ValueError(f"Image ID {image_id} is out of bound")
         patients_data = self.merged_df[Config.CLINICAL_IMAGE_DATA]
         if image_id is not None:
             patients_data = patients_data[patients_data["image_id"] == image_id]
@@ -118,6 +113,68 @@ class DataManager:
                 filtered_df = filtered_df[filtered_df[column].isin(values)]
     
         return filtered_df['image_id'].unique().tolist()
+
+    def get_images_metadata(self, image_id, image_format):
+        pass 
+    #TODO function that returns the metadata of image by image_id
+
+
+    def get_image_by_id(self, image_id):
+        """
+        Get the image by its ID.
+        Returns:
+            str: The path to the image file.
+        """
+        if image_id < 0 or image_id >= len(self.merged_df):
+            raise ValueError(f"Image ID {image_id} is out of bound")
+        
+        png_path = self.merged_df.loc[self.merged_df['image_id'] == image_id, 'png_path'].values[0]
+        if pd.isna(png_path):
+            raise ValueError(f"Image ID {image_id} does not have a valid PNG path")
+        return self.download_image_by_name(png_path)
+
+    # TODO this one does not working, Ayelet is on it.    
+    @staticmethod
+    def download_image_by_name(png_path):
+        """
+        Downloads a PNG image from S3 given its png_path from metadata.scv.
+        Args:
+            png_name (str): The name of the PNG file path (e.g., '/mnt/PACS_NAS1/mammo/png/cohort_1/extracted-images/38b.../eed16....png').
+        
+        Preprocessing: in order to match path to S3 structure:
+        Delete Prefix, change png to png_images, remove 'extracted-images' from the path.
+        Place the image in a subfolder named after the PNG file.
+        """
+        #  delete the prefix and 'extracted-images' from the path
+        png_path = png_path.replace('/mnt/PACS_NAS1/mammo/', '').replace('extracted-images/', '') # check that all images have the same prefix
+        png_path = png_path.replace('png/', 'png_images/')  #
+        # folder_prefix = f'png_images/'
+        bucket_name = 'embed-dataset-open'
+        s3 = boto3.resource('s3')
+        bucket = s3.Bucket(bucket_name)
+
+        png_path = f"{png_path}" #
+        download_dir = 'downloaded_images'
+        # Place each image in a subfolder named after the PNG file (without extension)
+        base_name = os.path.splitext(os.path.basename(png_path))[0]
+        folder_path = os.path.join(download_dir, base_name)
+        os.makedirs(folder_path, exist_ok=True)
+        filename = os.path.join(folder_path, os.path.basename(png_path))
+
+        try:
+            print(f"Downloading {png_path} to {filename}")
+            bucket.download_file(png_path, filename)
+            print(f"Downloaded {png_path} successfully.")
+        except Exception as e:
+            print(f"Error downloading {png_path}: {e}")
+
+# Example usage:
+# download_image_by_name('/mnt/PACS_NAS1/mammo/png/cohort_1/extracted-images/10f16c9202719fb63957e0b67c97a7380eff88765e36d6781ec3c43f/b5f0c9a8d05e485b36032a0c3972e6dbeb43076db2270bee7662b3ef/53fcc92b71f21c180291eb394f93ccbb1775f6031e49f7d6886c62fc.png')
+
+
+# /mnt/PACS_NAS1/mammo/png/cohort_1/extracted-images/38b0d72c577237bb5505103e0d9091fe8daa9a1a3a027a72933bef28/044795bfdbd82421d0032132bbfaa9d17d94465619d2581107899595/eed16a2c17f81f82ea8381ff17a23f57df0c4978624d265a1d7ce96a.png
+# /mnt/PACS_NAS1/mammo/png/cohort_1/extracted-images/10f16c9202719fb63957e0b67c97a7380eff88765e36d6781ec3c43f/b5f0c9a8d05e485b36032a0c3972e6dbeb43076db2270bee7662b3ef/53fcc92b71f21c180291eb394f93ccbb1775f6031e49f7d6886c62fc.png
+
 
 # DEBUG
 # dm = DataManager()

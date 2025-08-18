@@ -114,10 +114,16 @@ class DataManager:
     
         return filtered_df['image_id'].unique().tolist()
 
-    def get_images_metadata(self, image_id, image_format):
-        pass 
-    #TODO function that returns the metadata of image by image_id
-
+    def get_images_metadata(self, image_id: int):
+        if image_id < 0 or image_id >= len(self.merged_df):
+            return f"Image ID {image_id} is out of bounds", 400
+        
+        image_data = self.merged_df.loc[self.merged_df["image_id"] == image_id, Config.CLINICAL_IMAGE_DATA]
+        if image_data.empty:
+            return f"No image found with ID {image_id}", 404
+        
+        result = image_data.iloc[0].to_dict()
+        return result
 
     def get_image_by_id(self, image_id):
         """

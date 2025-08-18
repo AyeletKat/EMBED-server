@@ -27,6 +27,25 @@ class FilterRouteTest(unittest.TestCase):
         # image = Image.open(io.BytesIO(response.data))
         # image.show()
 
-    # TODO
-    def test_images_metadata(self):
-        response = self.client.get("/images-metadata")
+    #TODO fix this test and add tests with the vakues that should be in the response
+    def test_get_image_metadata_success(self):
+        valid_image_id = '1'
+        response = self.client.get(f'/{valid_image_id}/images-metadata?format=png')
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data)
+        self.assertIn("imagesMetadata", data)
+        self.assertIn("imageCount", data)
+        self.assertEqual(data["imageCount"], 1)
+        self.assertEqual(data["imagesMetadata"][0]["image_id"], str(valid_image_id))
+        self.assertEqual(data["imagesMetadata"][0]["imageFormat"], "png")
+
+    def test_get_image_metadata_invalid_id(self):
+        invalid_image_id = '-1'
+        response = self.client.get(f'/{invalid_image_id}/images-metadata')
+        self.assertEqual(response.status_code, 400)
+        data = json.loads(response.data)
+        self.assertIn("message", data)
+        self.assertIn("out of bounds", data["message"])
+
+if __name__ == "__main__":
+    unittest.main()

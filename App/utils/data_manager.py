@@ -5,6 +5,7 @@ import json
 import boto3
 import os
 from App.config import Config
+from flask import abort
 
 class DataManager:
     conf = Config()
@@ -116,11 +117,11 @@ class DataManager:
 
     def get_images_metadata(self, image_id: int):
         if image_id < 0 or image_id >= len(self.merged_df):
-            return f"Image ID {image_id} is out of bounds", 400
-        
-        image_data = self.merged_df.loc[self.merged_df["image_id"] == image_id, Config.CLINICAL_IMAGE_DATA]
+            return abort(400, description=f"Image ID {image_id} is out of bounds")
+        image_data = self.merged_df[Config.METADATA_IMAGE_DATA]
+        image_data = image_data[image_data["image_id"] == image_id]
         if image_data.empty:
-            return f"No image found with ID {image_id}", 404
+            return abort(404, description = f"No image found with ID {image_id}")
         
         result = image_data.iloc[0].to_dict()
         return result
@@ -180,9 +181,3 @@ class DataManager:
 
 # /mnt/PACS_NAS1/mammo/png/cohort_1/extracted-images/38b0d72c577237bb5505103e0d9091fe8daa9a1a3a027a72933bef28/044795bfdbd82421d0032132bbfaa9d17d94465619d2581107899595/eed16a2c17f81f82ea8381ff17a23f57df0c4978624d265a1d7ce96a.png
 # /mnt/PACS_NAS1/mammo/png/cohort_1/extracted-images/10f16c9202719fb63957e0b67c97a7380eff88765e36d6781ec3c43f/b5f0c9a8d05e485b36032a0c3972e6dbeb43076db2270bee7662b3ef/53fcc92b71f21c180291eb394f93ccbb1775f6031e49f7d6886c62fc.png
-
-
-# DEBUG
-# dm = DataManager()
-# patients_data = dm.merged_df[['side', 'massshape']]
-# print(patients_data.head(20))

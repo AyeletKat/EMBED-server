@@ -25,6 +25,6 @@ def get_image():
     if not image_id:
         return abort(400, description="Missing image_id")
     res = data_mng.get_image_by_id(int(image_id))
-    # if isinstance(res, tuple):
-    #     return abort(res[1], description=res[0])
+    if res is None:
+        return abort(500, description=f"Failed to retrieve image with ID {image_id}")
     return send_file(res, mimetype="image/jpeg"), 200

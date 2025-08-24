@@ -8,7 +8,6 @@ config = Config()
 def create_app():
     app = Flask(__name__)
     register_blueprints(app)
-    DataManager()
     return app
 
 def register_blueprints(app):

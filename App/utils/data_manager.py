@@ -6,16 +6,21 @@ import boto3
 import os
 from App.config import Config
 from flask import abort
+import traceback
 
 class DataManager:
     conf = Config()
     def __init__(self):
         # add index to metadata - uniwue value to image. return the indexes of the function that went through the filters.
-        self.df_metadata = pd.read_csv(self.conf.metadata_csv_path)
-        self.df_clinical = pd.read_csv(self.conf.clinical_csv_path)
+        self.df_metadata = pd.read_csv(self.conf.metadata_csv_path, low_memory=False)
+        self.df_clinical = pd.read_csv(self.conf.clinical_csv_path, low_memory=False)
         self.merged_df = self.merged_data()
         self.merged_df = self.merged_df.drop_duplicates(subset="png_path", keep="first")
-        self.merged_df["image_id"] = pd.factorize(self.merged_df["png_path"])[0]
+        self.merged_df['image_id'] = range(0, len(self.merged_df))
+        wanted_columns = list(set(self.conf.CLINICAL_IMAGE_DATA + self.conf.METADATA_IMAGE_DATA + self.conf.IMAGE_PATH))
+        self.merged_df = self.merged_df[wanted_columns]
+        # add to readme - took only the columns in config
+
     
     def merged_data(self):
         merged = pd.merge(
@@ -138,7 +143,7 @@ class DataManager:
         png_path = self.merged_df.loc[self.merged_df['image_id'] == image_id, 'png_path'].values[0]
         if pd.isna(png_path):
             raise ValueError(f"Image ID {image_id} does not have a valid PNG path")
-        return self.download_image_by_name(png_path)
+        return png_path if self.download_image_by_name(png_path) else None
 
     # TODO this one does not working, Ayelet is on it.    
     @staticmethod
@@ -172,8 +177,10 @@ class DataManager:
             print(f"Downloading {png_path} to {filename}")
             bucket.download_file(png_path, filename)
             print(f"Downloaded {png_path} successfully.")
+            return True
         except Exception as e:
             print(f"Error downloading {png_path}: {e}")
+            return False
 
 # Example usage:
 # download_image_by_name('/mnt/PACS_NAS1/mammo/png/cohort_1/extracted-images/10f16c9202719fb63957e0b67c97a7380eff88765e36d6781ec3c43f/b5f0c9a8d05e485b36032a0c3972e6dbeb43076db2270bee7662b3ef/53fcc92b71f21c180291eb394f93ccbb1775f6031e49f7d6886c62fc.png')

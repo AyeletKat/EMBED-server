@@ -23,12 +23,12 @@ class FilterRouteTest(unittest.TestCase):
         self.assertEqual(response.status_code, (500))
 
         # TODO this one does not working, Ayelet is on it.
-        # response = self.client.get("/full", query_string={"image_id": "0"})
-        # self.assertEqual(response.status_code, 200)
-        # self.assertEqual(response.mimetype, "image/jpeg")
-        # self.assertTrue(len(response.data) > 0)
-        # image = Image.open(io.BytesIO(response.data))
-        # image.show()
+        response = self.client.get("/full", query_string={"image_id": "0"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.mimetype, "image/jpeg")
+        self.assertTrue(len(response.data) > 0)
+        image = Image.open(io.BytesIO(response.data))
+        image.show()
 
     def test_get_image_metadata_success(self):
         valid_image_id = '2'

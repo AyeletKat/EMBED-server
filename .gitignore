@@ -32,3 +32,4 @@ data/EMBED_OpenData_clinical.csv
 .gitignore
 data/EMBED_OpenData_metadata.csv
 data/EMBED_OpenData_metadata_reduced.csv
+App/s3config.py

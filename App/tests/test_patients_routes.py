@@ -61,7 +61,8 @@ class FilterRouteTest(unittest.TestCase):
                 'asses': 'A',
                 'side': 'R',
                 'massshape': 'S',
-                'massmargin': 'D'
+                'massmargin': 'D',
+                'ViewPosition': 'MLO'
             }]
         }
         self.check_equal(data, expected)

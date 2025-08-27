@@ -1,5 +1,6 @@
 from flask import Blueprint, send_file, request, abort, jsonify
 from App import data_mng
+import os
 
 images_bp = Blueprint('images', __name__)
 
@@ -18,13 +19,12 @@ def get_image_metadata(image_id):
     response["imageCount"] = 1
     return jsonify(response), 200
 
-# TODO this one does not working, Ayelet is on it.
 @images_bp.route('/full', methods=['GET'])
 def get_image():
     image_id = request.args.get('image_id')
     if not image_id:
         return abort(400, description="Missing image_id")
-    res = data_mng.get_image_by_id(int(image_id))
-    if res is None:
+    image_path = data_mng.get_image_by_id(int(image_id))
+    if image_path is None:
         return abort(500, description=f"Failed to retrieve image with ID {image_id}")
-    return send_file(res, mimetype="image/jpeg"), 200
+    return send_file(os.path.join(os.getcwd(), image_path), mimetype="image/png"), 200

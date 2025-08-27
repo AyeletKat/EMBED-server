@@ -1,15 +1,17 @@
 import pandas as pd
 import re
-import os
-import json
 import boto3
 import os
 from App.config import Config
+from App.s3config import s3config
 from flask import abort
-import traceback
+import pydicom
+import matplotlib.pyplot as plt
+
 
 class DataManager:
     conf = Config()
+    s3config = s3config()
     def __init__(self):
         # add index to metadata - uniwue value to image. return the indexes of the function that went through the filters.
         self.df_metadata = pd.read_csv(self.conf.metadata_csv_path, low_memory=False)
@@ -83,7 +85,7 @@ class DataManager:
         return unique_values
 
     def get_image_ids(self):
-        return self.merged_df["image_id"].unique().tolist()
+        return self.merged_df["image_id"].tolist()[0:100]
         
     def get_patients_data(self, keys_format: str = "camel", include_file_path : bool = False, image_id = None):
         if image_id < 0 or image_id >= len(self.merged_df):
@@ -139,52 +141,48 @@ class DataManager:
         """
         if image_id < 0 or image_id >= len(self.merged_df):
             raise ValueError(f"Image ID {image_id} is out of bound")
-        
-        png_path = self.merged_df.loc[self.merged_df['image_id'] == image_id, 'png_path'].values[0]
-        if pd.isna(png_path):
+
+        png_path = os.path.join('downloaded_images', f"{image_id}.png")
+        if os.path.exists(png_path):
+            print(f"Found cached PNG for image_id {image_id}: {png_path}")
+            return png_path
+
+        dicom_path = self.merged_df.loc[self.merged_df['image_id'] == image_id, 'anon_dicom_path'].values[0]
+        if pd.isna(dicom_path):
             raise ValueError(f"Image ID {image_id} does not have a valid PNG path")
-        return png_path if self.download_image_by_name(png_path) else None
+        png_path = self.download_image_by_name(dicom_path, image_id)
+        return png_path
 
-    # TODO this one does not working, Ayelet is on it.    
     @staticmethod
-    def download_image_by_name(png_path):
-        """
-        Downloads a PNG image from S3 given its png_path from metadata.scv.
-        Args:
-            png_name (str): The name of the PNG file path (e.g., '/mnt/PACS_NAS1/mammo/png/cohort_1/extracted-images/38b.../eed16....png').
-        
-        Preprocessing: in order to match path to S3 structure:
-        Delete Prefix, change png to png_images, remove 'extracted-images' from the path.
-        Place the image in a subfolder named after the PNG file.
-        """
-        #  delete the prefix and 'extracted-images' from the path
-        png_path = png_path.replace('/mnt/PACS_NAS1/mammo/', '').replace('extracted-images/', '') # check that all images have the same prefix
-        png_path = png_path.replace('png/', 'png_images/')  #
-        # folder_prefix = f'png_images/'
+    def download_image_by_name(anon_dicom_path, image_id):
+        anon_dicom_path = anon_dicom_path.replace('/mnt/NAS2/mammo/anon_dicom', 'images')
         bucket_name = 'embed-dataset-open'
-        s3 = boto3.resource('s3')
+        s3 = boto3.resource(
+            's3',
+            aws_access_key_id=s3config.S3_ACCOUNT_KEY,
+            aws_secret_access_key=s3config.S3_SECRET_ACCESS_KEY
+        )
         bucket = s3.Bucket(bucket_name)
-
-        png_path = f"{png_path}" #
+        dicom_path = f"{anon_dicom_path}"
         download_dir = 'downloaded_images'
-        # Place each image in a subfolder named after the PNG file (without extension)
-        base_name = os.path.splitext(os.path.basename(png_path))[0]
-        folder_path = os.path.join(download_dir, base_name)
-        os.makedirs(folder_path, exist_ok=True)
-        filename = os.path.join(folder_path, os.path.basename(png_path))
-
+        os.makedirs(download_dir, exist_ok=True)
+        filename = os.path.join(download_dir, f"{image_id}.dcm")
+        print(f"filename: {filename}")
         try:
-            print(f"Downloading {png_path} to {filename}")
-            bucket.download_file(png_path, filename)
-            print(f"Downloaded {png_path} successfully.")
-            return True
+            print(f"Downloading {dicom_path} to {filename}")
+            bucket.download_file(dicom_path, filename)
+            print(f"Downloaded {anon_dicom_path} successfully.")
         except Exception as e:
-            print(f"Error downloading {png_path}: {e}")
-            return False
+            import traceback
+            print(traceback.format_exc())
+            print(f"Error downloading {anon_dicom_path}: {e}")
+            return None
+        dicom = pydicom.dcmread(filename)
+        pixel_array = dicom.pixel_array
+        png_path = os.path.join(download_dir, f"{image_id}.png")
+        plt.imsave(png_path, pixel_array, cmap='gray')
+        os.remove(filename)
+        print(f"Converted {filename} to {png_path} and deleted the DICOM file.")
 
-# Example usage:
-# download_image_by_name('/mnt/PACS_NAS1/mammo/png/cohort_1/extracted-images/10f16c9202719fb63957e0b67c97a7380eff88765e36d6781ec3c43f/b5f0c9a8d05e485b36032a0c3972e6dbeb43076db2270bee7662b3ef/53fcc92b71f21c180291eb394f93ccbb1775f6031e49f7d6886c62fc.png')
+        return png_path
 
-
-# /mnt/PACS_NAS1/mammo/png/cohort_1/extracted-images/38b0d72c577237bb5505103e0d9091fe8daa9a1a3a027a72933bef28/044795bfdbd82421d0032132bbfaa9d17d94465619d2581107899595/eed16a2c17f81f82ea8381ff17a23f57df0c4978624d265a1d7ce96a.png
-# /mnt/PACS_NAS1/mammo/png/cohort_1/extracted-images/10f16c9202719fb63957e0b67c97a7380eff88765e36d6781ec3c43f/b5f0c9a8d05e485b36032a0c3972e6dbeb43076db2270bee7662b3ef/53fcc92b71f21c180291eb394f93ccbb1775f6031e49f7d6886c62fc.png

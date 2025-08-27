@@ -19,7 +19,7 @@ def filter_options_mass():
     res_str = json.dumps(response, default=str)
     return jsonify(res_str), 200
 
-@filter_bp.route('/image-ids', methods=['GET'])
+@filter_bp.route('/images-ids', methods=['GET'])
 def filter_options_patients():
     response = data_mng.get_image_ids()
     result = {"imageIds": response}

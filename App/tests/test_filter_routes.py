@@ -49,7 +49,7 @@ class FilterRouteTest(unittest.TestCase):
         self.check_equality(data, expected_data)
 
     def test_numbers_endpoint(self):
-        response = self.client.get('/image-ids')
+        response = self.client.get('/images-ids')
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.data)
         data = json.loads(json.loads(response.data))  # decode JSON if double-encoded

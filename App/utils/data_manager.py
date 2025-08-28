@@ -4,6 +4,7 @@ import boto3
 import os
 from App.config import Config
 from App.s3config import s3config
+from App.config import S3Details
 from flask import abort
 import pydicom
 import matplotlib.pyplot as plt
@@ -156,15 +157,14 @@ class DataManager:
     @staticmethod
     def download_image_by_name(anon_dicom_path, image_id):
         anon_dicom_path = anon_dicom_path.replace('/mnt/NAS2/mammo/anon_dicom', 'images')
-        bucket_name = 'embed-dataset-open'
         s3 = boto3.resource(
             's3',
             aws_access_key_id=s3config.S3_ACCOUNT_KEY,
             aws_secret_access_key=s3config.S3_SECRET_ACCESS_KEY
         )
-        bucket = s3.Bucket(bucket_name)
+        bucket = s3.Bucket(S3Details.BUCKET_NAME)
         dicom_path = f"{anon_dicom_path}"
-        download_dir = 'downloaded_images'
+        download_dir = S3Details.IMAGES_FOLDER
         os.makedirs(download_dir, exist_ok=True)
         filename = os.path.join(download_dir, f"{image_id}.dcm")
         print(f"filename: {filename}")

@@ -11,3 +11,7 @@ class Config:
     metadata_csv_path = os.path.join(BASE_DIR, "data", "EMBED_OpenData_metadata.csv")
     clinical_csv_path = os.path.join(BASE_DIR, "data", "EMBED_OpenData_clinical.csv")
 
+class S3Details:
+    BUCKET_NAME = "embed-dataset-open"
+    IMAGES_FOLDER = "downloaded_images"
+

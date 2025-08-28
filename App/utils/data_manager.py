@@ -86,7 +86,7 @@ class DataManager:
         return unique_values
 
     def get_image_ids(self):
-        return self.merged_df["image_id"].tolist()[0:100]
+        return self.merged_df["image_id"].tolist()[0:500]
         
     def get_patients_data(self, keys_format: str = "camel", include_file_path : bool = False, image_id = None):
         if image_id < 0 or image_id >= len(self.merged_df):

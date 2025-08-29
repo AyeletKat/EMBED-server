@@ -54,7 +54,7 @@ class FilterRouteTest(unittest.TestCase):
         self.assertTrue(response.data)
         data = json.loads(json.loads(response.data))  # decode JSON if double-encoded
         image_ids = set(data["imageIds"])  # convert to set to ignore order
-        expected_ids = set(range(0, 152607))  
+        expected_ids = set(range(0, 152607))
         self.assertEqual(image_ids, expected_ids)
 
 

@@ -54,16 +54,14 @@ class FilterRouteTest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
         expected = {
-            '0': [{
-                'empiAnon': 60696029,
-                'accAnon': 8099128854014801,
-                'tissueden': 3.0,
-                'asses': 'A',
-                'side': 'R',
-                'massshape': 'S',
-                'massmargin': 'D',
-                'ViewPosition': 'MLO'
-            }]
+            'empiAnon': 60696029,
+            'accAnon': 8099128854014801,
+            'tissueden': 3.0,
+            'asses': 'A',
+            'side': 'R',
+            'massshape': 'S',
+            'massmargin': 'D',
+            'ViewPosition': 'MLO'
         }
         self.check_equal(data, expected)
         

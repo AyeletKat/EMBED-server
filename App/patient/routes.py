@@ -6,8 +6,6 @@ patients_bp = Blueprint('patients', __name__)
 
 @patients_bp.route('/', methods=['GET'])
 def patients():
-    # response = data_mng.get_patients_data()
-    # return jsonify(response), 200
     return 200
 
 #  CLINICAL_IMAGE_DATA

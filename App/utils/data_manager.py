@@ -3,7 +3,7 @@ import re
 import boto3
 import os
 from App.config import Config
-from App.s3config import s3config
+from App.s3config import s3config       # From this import we get the S3 credentials
 from App.config import S3Details
 from flask import abort
 import pydicom

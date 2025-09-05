@@ -14,7 +14,6 @@ class FilterRouteTest(unittest.TestCase):
             self.assertIn(key, actual, f"Key '{key}' missing in response")
             self.assertEqual(actual[key], expected_value)
     def test_filter_images(self):
-
         filters = {
             "massshape": {"massshape": ["O"]},
             "massmargin": {"massmargin": ["U"]}
@@ -49,7 +48,7 @@ class FilterRouteTest(unittest.TestCase):
         self.assertIn(17, data["imageIds"])
 
     def test_filter_images_with_id(self):
-        test_image_id = "0"
+        test_image_id = "10"
         response = self.client.get(f"/{test_image_id}")
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
@@ -63,6 +62,7 @@ class FilterRouteTest(unittest.TestCase):
             'massmargin': 'D',
             'ViewPosition': 'MLO'
         }
+        print(data)
         self.check_equal(data, expected)
         
         test_image_id = "10000000"

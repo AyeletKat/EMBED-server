@@ -88,23 +88,17 @@ class DataManager:
     def get_image_ids(self):
         return self.merged_df["image_id"].tolist()[0:500]
         
-    def get_patients_data(self, keys_format: str = "camel", include_file_path : bool = False, image_id = None):
+    def get_patients_data(self, keys_format: str = "camel", image_id = None):
         if image_id < 0 or image_id >= len(self.merged_df):
             raise ValueError(f"Image ID {image_id} is out of bound")
         patients_data = self.merged_df[Config.CLINICAL_IMAGE_DATA]
         if image_id is not None:
             patients_data = patients_data[patients_data["image_id"] == image_id]
-        patients_data = patients_data.dropna(axis=1, how="any")
         patients_data = patients_data.rename(columns={col: self.convert_key_format(col, keys_format) for col in patients_data.columns})
-        patients_dict = {}
-        grouped = patients_data.groupby(self.convert_key_format('image_id', keys_format))
-        for p_id, group in grouped:
-            patient_list = [
-                {k: v for k, v in row.items() if pd.notnull(v) and k != self.convert_key_format('image_id', keys_format)}
-                for row in group.to_dict(orient='records')
-            ]
-            patients_dict[p_id] = patient_list
-        return patients_dict
+        patients_data = patients_data.T
+        patients_data = patients_data.dropna()
+        # if there is an image_id, there should be only one column
+        return list(patients_data.to_dict().values())[0] if image_id is not None else patients_data.to_dict()
     
     def filter_patients(self, filters):
         filtered_df = self.merged_df

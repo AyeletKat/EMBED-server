@@ -13,13 +13,20 @@ def filter_options():
     return jsonify(res_str), 200
 
 @filter_bp.route('/abnormality-options', methods=['GET'])
-def filter_options_mass():
+def filter_options_abnormality():
     response = data_mng.get_unique_values("distinct")
     res_str = json.dumps(response, default=str)
     return jsonify(res_str), 200
 
+@filter_bp.route('/empi-anons', methods=['GET'])
+def filter_options_empi_anons():
+    response = data_mng.get_empi_anons()
+    result = {"empiAnons": response}
+    res_str = json.dumps(result, default=str)
+    return jsonify(res_str), 200
+
 @filter_bp.route('/images-ids', methods=['GET'])
-def filter_options_patients():
+def filter_options_images_ids():
     response = data_mng.get_image_ids()
     result = {"imageIds": response}
     res_str = json.dumps(result, default=str)

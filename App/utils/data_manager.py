@@ -85,8 +85,11 @@ class DataManager:
         unique_values = {self.convert_key_format(k, keys_format): sorted(list(v)) for k, v in unique_values.items()}
         return unique_values
 
+    def get_empi_anons(self):
+        return self.merged_df["empi_anon"].unique().tolist()[0:500]     # FIXME 
+    
     def get_image_ids(self):
-        return self.merged_df["image_id"].tolist()[0:500]
+        return self.merged_df["image_id"].tolist()  #FIXME - limit to 500 for now ?
         
     def get_patients_data(self, keys_format: str = "camel", image_id = None):
         if image_id < 0 or image_id >= len(self.merged_df):
@@ -105,7 +108,10 @@ class DataManager:
         merged_filters = {}
         for key, value in filters.items():
             for filter_key in value:
-                filter_key_formatted = self.convert_key_format(filter_key, "snake")
+                if filter_key == "empiAnons":
+                    filter_key_formatted = "empi_anon"
+                else:
+                    filter_key_formatted = self.convert_key_format(filter_key, "snake")
                 merged_filters[filter_key_formatted] = value[filter_key]
 
         if not merged_filters:
@@ -179,4 +185,3 @@ class DataManager:
         print(f"Converted {filename} to {png_path} and deleted the DICOM file.")
 
         return png_path
-

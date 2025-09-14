@@ -1,9 +1,9 @@
 from flask import Flask
 from App.utils import DataManager
-from App.config import Config
+from App.config import DataBaseConfig
 
 data_mng = DataManager()
-config = Config()
+config = DataBaseConfig()
 
 def create_app():
     app = Flask(__name__)

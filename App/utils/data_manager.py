@@ -2,25 +2,23 @@ import pandas as pd
 import re
 import boto3
 import os
-from App.config import Config
-from App.s3config import s3config       # From this import we get the S3 credentials
-from App.config import S3Details
+from App.config import DataBaseConfig, S3Details
+from App.s3config import S3Config       # From this import we get the S3 credentials
 from flask import abort
 import pydicom
 import matplotlib.pyplot as plt
+import glob
 
 
 class DataManager:
-    conf = Config()
-    s3config = s3config()
     def __init__(self):
         # add index to metadata - uniwue value to image. return the indexes of the function that went through the filters.
-        self.df_metadata = pd.read_csv(self.conf.metadata_csv_path, low_memory=False)
-        self.df_clinical = pd.read_csv(self.conf.clinical_csv_path, low_memory=False)
+        self.df_metadata = pd.read_csv(DataBaseConfig.metadata_csv_path, low_memory=False)
+        self.df_clinical = pd.read_csv(DataBaseConfig.clinical_csv_path, low_memory=False)
         self.merged_df = self.merged_data()
         self.merged_df = self.merged_df.drop_duplicates(subset="png_path", keep="first")
         self.merged_df['image_id'] = range(0, len(self.merged_df))
-        wanted_columns = list(set(self.conf.CLINICAL_IMAGE_DATA + self.conf.METADATA_IMAGE_DATA + self.conf.IMAGE_PATH))
+        wanted_columns = list(set(DataBaseConfig.CLINICAL_IMAGE_DATA + DataBaseConfig.METADATA_IMAGE_DATA + DataBaseConfig.IMAGE_PATH))
         self.merged_df = self.merged_df[wanted_columns]
         # add to readme - took only the columns in config
 
@@ -70,9 +68,9 @@ class DataManager:
 
     def get_columns(self, collection : str, include_file_path : bool = False):
         if collection == "common":
-            columns = Config.FILTERS
+            columns = DataBaseConfig.FILTERS
         elif collection == "distinct":
-            columns = Config.ABNORMALITY_FILTERS
+            columns = DataBaseConfig.ABNORMALITY_FILTERS
         return columns
     
     def get_unique_values(self, collection: str, keys_format = "camel", include_file_path : bool = False):
@@ -86,15 +84,15 @@ class DataManager:
         return unique_values
 
     def get_empi_anons(self):
-        return self.merged_df["empi_anon"].unique().tolist()[0:500]     # FIXME 
+        return self.merged_df["empi_anon"].unique().tolist()[DataBaseConfig.START_EMPI_ANON:DataBaseConfig.END_EMPI_ANON]
     
     def get_image_ids(self):
-        return self.merged_df["image_id"].tolist()  #FIXME - limit to 500 for now ?
+        return self.merged_df["image_id"].tolist()
         
     def get_patients_data(self, keys_format: str = "camel", image_id = None):
         if image_id < 0 or image_id >= len(self.merged_df):
             raise ValueError(f"Image ID {image_id} is out of bound")
-        patients_data = self.merged_df[Config.CLINICAL_IMAGE_DATA]
+        patients_data = self.merged_df[DataBaseConfig.CLINICAL_IMAGE_DATA]
         if image_id is not None:
             patients_data = patients_data[patients_data["image_id"] == image_id]
         patients_data = patients_data.rename(columns={col: self.convert_key_format(col, keys_format) for col in patients_data.columns})
@@ -126,7 +124,7 @@ class DataManager:
     def get_images_metadata(self, image_id: int):
         if image_id < 0 or image_id >= len(self.merged_df):
             return abort(400, description=f"Image ID {image_id} is out of bounds")
-        image_data = self.merged_df[Config.METADATA_IMAGE_DATA]
+        image_data = self.merged_df[DataBaseConfig.METADATA_IMAGE_DATA]
         image_data = image_data[image_data["image_id"] == image_id]
         if image_data.empty:
             return abort(404, description = f"No image found with ID {image_id}")
@@ -152,6 +150,7 @@ class DataManager:
         if pd.isna(dicom_path):
             raise ValueError(f"Image ID {image_id} does not have a valid PNG path")
         png_path = self.download_image_by_name(dicom_path, image_id)
+        cleanup_di_folder()
         return png_path
 
     @staticmethod
@@ -159,8 +158,8 @@ class DataManager:
         anon_dicom_path = anon_dicom_path.replace('/mnt/NAS2/mammo/anon_dicom', 'images')
         s3 = boto3.resource(
             's3',
-            aws_access_key_id=s3config.S3_ACCOUNT_KEY,
-            aws_secret_access_key=s3config.S3_SECRET_ACCESS_KEY
+            aws_access_key_id=S3Config.S3_ACCOUNT_KEY,
+            aws_secret_access_key=S3Config.S3_SECRET_ACCESS_KEY
         )
         bucket = s3.Bucket(S3Details.BUCKET_NAME)
         dicom_path = f"{anon_dicom_path}"
@@ -185,3 +184,22 @@ class DataManager:
         print(f"Converted {filename} to {png_path} and deleted the DICOM file.")
 
         return png_path
+    
+
+def cleanup_di_folder():
+    folder_size = 0
+    for root, _, files in os.walk(S3Details.IMAGES_FOLDER):
+        for f in files:
+            fp = os.path.join(root, f)
+            if os.path.isfile(fp):
+                folder_size += os.path.getsize(fp)
+    if folder_size <= S3Details.MAX_FOLDER_SIZE:
+        return
+    files = [f for f in glob.glob(os.path.join(S3Details.IMAGES_FOLDER, "*")) if os.path.isfile(f)]
+    files.sort(key=os.path.getmtime)
+    for f in range(len(files)//2):
+        try:
+            os.remove(files[f])
+        except Exception as e:
+            print(f"Failed to delete {files[f]}: {e}")
+

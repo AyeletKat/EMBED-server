@@ -39,7 +39,6 @@ pyparsing==3.0.9
 pyrsistent==0.19.3
 python-dateutil==2.8.2
 pytz==2023.3
-requests==2.31.0
 rt-utils==1.2.7
 SimpleITK==2.2.1
 six==1.16.0
@@ -48,7 +47,6 @@ tcia_utils==1.6.7
 traitlets==5.9.0
 typing_extensions==4.7.1
 tzdata==2023.3
-urllib3==2.0.4
 wcwidth==0.2.6
 Werkzeug==2.3.6
 widgetsnbextension==4.0.8
@@ -56,4 +54,5 @@ zipp==3.16.2
 Pillow==10.0.1
 boto3==1.26.150
 pydicom==3.0.1
+requests==2.31.0
 

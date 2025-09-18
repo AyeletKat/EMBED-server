@@ -1,4 +1,3 @@
-import json
 import os
 class DataBaseConfig:
     FILTERS: list[str] = ["asses", "side", "massdens", "type", "path_severity", "ViewPosition"] 

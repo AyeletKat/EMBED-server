@@ -33,7 +33,6 @@ packaging==23.1
 pandas==2.0.3
 parso==0.8.3
 pickleshare==0.7.5
-Pillow==10.0.0
 prompt-toolkit==3.0.39
 pure-eval==0.2.2
 pyparsing==3.0.9
@@ -54,12 +53,6 @@ wcwidth==0.2.6
 Werkzeug==2.3.6
 widgetsnbextension==4.0.8
 zipp==3.16.2
-json
-os
-unittest
-PIL
-io
-re
-boto3
-pydicom
-glob
+Pillow==10.0.1
+boto3==1.26.150
+pydicom==2.6.1

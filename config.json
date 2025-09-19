@@ -1,8 +1,0 @@
-
-{
-  "series_name": "CBIS-DDSM",
-  "base_url": "https://services.cancerimagingarchive.net/nbia-api/services/v1/",
-  "calc_file_path": "./data/calc_set.csv",
-  "mass_file_path": "./data/mass_set.csv",
-  "series_file_path": "./data/getSeries.csv"
-}

@@ -55,4 +55,5 @@ Pillow==10.0.1
 boto3==1.26.150
 pydicom==3.0.1
 requests==2.31.0
-
+pylibjpeg>=2.0
+pylibjpeg-libjpeg>=2.1

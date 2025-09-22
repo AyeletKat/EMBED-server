@@ -28,7 +28,7 @@ class DataManager:
             self.df_clinical,
             self.df_metadata,
             on=['empi_anon', 'acc_anon'],
-            how='inner'
+            how='right'
         )
 
         condition = (
@@ -37,7 +37,8 @@ class DataManager:
         )
         merged_df = merged[condition]
         return merged_df
-    
+
+
     @staticmethod
     def convert_key_format(key, keys_format = "camel"):
         """
@@ -206,14 +207,7 @@ def cleanup_di_folder():
 if __name__ == "__main__":
     print("Starting data manager test...")
     dm = DataManager()
-    pairs1 = set(map(tuple, dm.df_metadata[["empi_anon", "acc_anon"]].drop_duplicates().values))
-    pairs2 = set(map(tuple, dm.df_clinical[["empi_anon", "acc_anon"]].drop_duplicates().values))
-
-    # intersection
-    common_pairs = pairs1 & pairs2
-
-    print(f"Number of common pairs: {len(common_pairs)}")
-    print("Example pairs:", list(common_pairs)[:5])  # preview
+    print(f"merged_df size is {len(dm.merged_df)}")
 
 
     print("end.")

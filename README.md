@@ -59,7 +59,7 @@ The server"s endpoints can be found under `filter`, `image` and `patient` folder
 
 - `filter/options`: Returns the unique options for the filters that in the electron app under the **Filters** column.
 - `filter/abnormality-options`: Returns the unique options for the filters that in the electron app under the **Abnormality Params** column.
-- `filter/empi-anons`: Returns the unique anonymized EMPIs in the dataset.
+- `filter/empi-anons`: Returns the unique anonymized EMPIs (patient IDs) in the dataset.
 - `filter/image-ids`: Returns the unique image IDs in the dataset. *Uses for inner processes in the electron and not as a filter*
 
 **image**

@@ -43,7 +43,7 @@ Contains:
 ### Utils
 
 The utils folder contains the `data_manager`, that merges both csvs by the instructions in the EMBED repo.  
-- It's responsible for:
+- It"s responsible for:
   - Extracting the unique options for the filtering.
   - Patients data demanded by the electron.
   - The filtering functionality.
@@ -53,7 +53,7 @@ Tests for all the endpoints.
 
 ### EndPoints
 
-The server's endpoints can be found under `filter`, `image` and `patient` folders.
+The server"s endpoints can be found under `filter`, `image` and `patient` folders.
 
 **filter**
 
@@ -85,14 +85,14 @@ The server's endpoints can be found under `filter`, `image` and `patient` folder
    Example for response:
   ```json
   {
-    'empiAnon': 60696029,
-    'accAnon': 8099128854014801,
-    'tissueden': 3.0,
-    'asses': 'A',
-    'side': 'R',
-    'massshape': 'S',
-    'massmargin': 'D',
-    'ViewPosition': 'MLO'
+    "empiAnon": 60696029,
+    "accAnon": 8099128854014801,
+    "tissueden": 3.0,
+    "asses": "A",
+    "side": "R",
+    "massshape": "S",
+    "massmargin": "D",
+    "ViewPosition": "MLO"
   }
   ```
 - `patients/filter`: Given filters params from the electron app, this endpoint returns all the image IDs that match the requested query.

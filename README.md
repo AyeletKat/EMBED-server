@@ -1,7 +1,12 @@
 # EMBED Open Data Server
 
-Flask server that handles data retrieval and processing, interacting with the EMBED Open Data to serve relevant data to the [Electron app](https://github.com/Oriya-Sigawy/ddsm-electron.git). The backend processes queries, retrieves patient metadata, and returns filtered results.
-This server has an analyzer that runs both the server and its Electron app: [Analyzer](https://github.com/AyeletKat/ddsm-analyzer.git). Its best to run it from the analyzer.
+Flask server that handles data retrieval and processing, interacting with the EMBED Open Data to serve relevant data to the [Electron app](https://github.com/Oriya-Sigawy/ddsm-electron.git). 
+
+The backend processes queries, retrieves patient metadata, and returns filtered results.
+
+This server has an Analyzer that runs both the server and its Electron app: [Analyzer](https://github.com/AyeletKat/ddsm-analyzer.git).
+
+Its best to run it from the analyzer. 
 
 ## Pre-Requisites
 
@@ -59,7 +64,7 @@ The server"s endpoints can be found under `filter`, `image` and `patient` folder
 
 - `filter/options`: Returns the unique options for the filters that in the electron app under the **Filters** column.
 - `filter/abnormality-options`: Returns the unique options for the filters that in the electron app under the **Abnormality Params** column.
-- `filter/empi-anons`: Returns the unique anonymized EMPIs in the dataset.
+- `filter/empi-anons`: Returns the unique anonymized EMPIs (patient IDs) in the dataset.
 - `filter/image-ids`: Returns the unique image IDs in the dataset. *Uses for inner processes in the electron and not as a filter*
 
 **image**

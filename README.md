@@ -65,7 +65,7 @@ The server's endpoints can be found under `filter`, `image` and `patient` folder
 **image**
 
 - `images/<image_id>/images-metadata`: Receives image_id and returns the metadata of the image.
-  example for response:
+  Example for response:
   ```json 
   {  
     "FinalImageType": "2D",  
@@ -82,16 +82,17 @@ The server's endpoints can be found under `filter`, `image` and `patient` folder
 
 - `patients/`: Test endpoint to check the connection.
 - `patients/<image_id>`: Returns the data of the corresponding patient that whose image what selected.
-```json
-{
-  'empiAnon': 60696029,
-  'accAnon': 8099128854014801,
-  'tissueden': 3.0,
-  'asses': 'A',
-  'side': 'R',
-  'massshape': 'S',
-  'massmargin': 'D',
-  'ViewPosition': 'MLO'
-}
-```
+   Example for response:
+  ```json
+  {
+    'empiAnon': 60696029,
+    'accAnon': 8099128854014801,
+    'tissueden': 3.0,
+    'asses': 'A',
+    'side': 'R',
+    'massshape': 'S',
+    'massmargin': 'D',
+    'ViewPosition': 'MLO'
+  }
+  ```
 - `patients/filter`: Given filters params from the electron app, this endpoint returns all the image IDs that match the requested query.

@@ -82,7 +82,7 @@ The server's endpoints can be found under `filter`, `image` and `patient` folder
 
 - `patients/`: Test endpoint to check the connection.
 - `patients/<image_id>`: Returns the data of the corresponding patient that whose image what selected.
-  ```json
+```json
 {
   'empiAnon': 60696029,
   'accAnon': 8099128854014801,

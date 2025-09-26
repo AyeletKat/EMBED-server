@@ -1,7 +1,9 @@
 # EMBED Open Data Server
 
-Flask server that handles data retrieval and processing, interacting with the EMBED Open Data to serve relevant data to the [Electron app](https://github.com/Oriya-Sigawy/ddsm-electron.git). The backend processes queries, retrieves patient metadata, and returns filtered results.
-This server has an analyzer that runs both the server and its Electron app: [Analyzer](https://github.com/AyeletKat/ddsm-analyzer.git). Its best to run it from the analyzer.
+Flask server that handles data retrieval and processing, interacting with the EMBED Open Data to serve relevant data to the [Electron app](https://github.com/Oriya-Sigawy/ddsm-electron.git). 
+The backend processes queries, retrieves patient metadata, and returns filtered results.
+This server has an analyzer that runs both the server and its Electron app: [Analyzer](https://github.com/AyeletKat/ddsm-analyzer.git). 
+Its best to run it from the analyzer.
 
 ## Pre-Requisites
 

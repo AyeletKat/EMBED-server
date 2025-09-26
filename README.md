@@ -60,54 +60,38 @@ The server's endpoints can be found under `filter`, `image` and `patient` folder
 - `filter/options`: Returns the unique options for the filters that in the electron app under the **Filters** column.
 - `filter/abnormality-options`: Returns the unique options for the filters that in the electron app under the **Abnormality Params** column.
 - `filter/empi-anons`: Returns the unique anonymized EMPIs in the dataset.
-- - `filter/image-ids`: Returns the unique image IDs in the dataset. *Uses for inner processes in the electron and not as a filter*
+- `filter/image-ids`: Returns the unique image IDs in the dataset. *Uses for inner processes in the electron and not as a filter*
 
 **image**
 
 - `images/<image_id>/images-metadata`: Receives image_id and returns the metadata of the image.
   example for response:
-  {
-    "FinalImageType": "2D",
-    "SeriesDescription": "R MLO",
-    "ViewPosition": "MLO",
-    "imageFormat": "png",
-    "image_id": "1",
-    "side": "R"
+  ```json 
+  {  
+    "FinalImageType": "2D",  
+    "SeriesDescription": "R MLO",  
+    "ViewPosition": "MLO",  
+    "imageFormat": "png",  
+    "image_id": "1",  
+    "side": "R"  
   }
-- `images//<image_id>/full`: Receives image_id and returns png file of the image.
+  ```
+- `images/<image_id>/full`: Receives image_id and returns png file of the image.
 
 **patient**
 
-- `patients/`: Returns all patients data.
-- `patients/<patient_id>`: Returns the data of the corresponding patient.
+- `patients/`: Test endpoint to check the connection.
+- `patients/<image_id>`: Returns the data of the corresponding patient that whose image what selected.
   ```json
-  {
-    "P_01009": [
-      {
-        "abnormalityId": 1,
-        "abnormalityType": "mass",
-        "assessment": 4,
-        "breastDensity": 2,
-        "imageView": "CC",
-        "leftOrRightBreast": "RIGHT",
-        "massMargins": "OBSCURED",
-        "massShape": "OVAL",
-        "pathology": "MALIGNANT",
-        "subtlety": 2
-      },
-      {
-        "abnormalityId": 1,
-        "abnormalityType": "mass",
-        "assessment": 4,
-        "breastDensity": 2,
-        "imageView": "MLO",
-        "leftOrRightBreast": "RIGHT",
-        "massMargins": "OBSCURED",
-        "massShape": "OVAL",
-        "pathology": "MALIGNANT",
-        "subtlety": 3
-      }
-    ]
-  }
-  ```
-- `patients/filter`: Given filters params from the electron electron, this endpoint returns all the patients IDs that match the requested query.
+{
+  'empiAnon': 60696029,
+  'accAnon': 8099128854014801,
+  'tissueden': 3.0,
+  'asses': 'A',
+  'side': 'R',
+  'massshape': 'S',
+  'massmargin': 'D',
+  'ViewPosition': 'MLO'
+}
+```
+- `patients/filter`: Given filters params from the electron app, this endpoint returns all the image IDs that match the requested query.

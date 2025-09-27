@@ -15,7 +15,7 @@ class DataBaseConfig:
 class S3Details:
     BUCKET_NAME = "embed-dataset-open"
     IMAGES_FOLDER = "downloaded_images"
-    MAX_FOLDER_SIZE = 100 * 1024 * 1024 # in Bytes - insert to readme
-    S3_KEYS_FILE_NAME = "s3_keys.txt" # add to readme
+    MAX_FOLDER_SIZE = 100 * 1024 * 1024 # in Bytes
+    S3_KEYS_FILE_NAME = "s3_keys.txt"
 
 

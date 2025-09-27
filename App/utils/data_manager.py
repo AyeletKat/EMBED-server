@@ -20,7 +20,6 @@ class DataManager:
         self.merged_df['image_id'] = range(0, len(self.merged_df))
         wanted_columns = list(set(DataBaseConfig.CLINICAL_IMAGE_DATA + DataBaseConfig.METADATA_IMAGE_DATA + DataBaseConfig.IMAGE_PATH))
         self.merged_df = self.merged_df[wanted_columns]
-        # add to readme - took only the columns in config
 
     
     def merged_data(self):

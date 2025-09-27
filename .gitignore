@@ -33,4 +33,3 @@ data/EMBED_OpenData_clinical.csv
 data/EMBED_OpenData_metadata.csv
 data/EMBED_OpenData_metadata_reduced.csv
 downloaded_images/
-s3_keys.txt

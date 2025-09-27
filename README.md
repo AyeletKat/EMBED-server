@@ -52,14 +52,14 @@ The utils folder contains the `data_manager`, that merges both csvs by the instr
   - Extracting the unique options for the filtering.
   - Patients data demanded by the electron.
   - The filtering functionality.
-  
-The `data_manager` downloads the pictures it needs to a folder "downloaded_images" (it create this folter automatically).  
-Obviouslly if it will need an image that was already downloaded it will take it and not redownload it, but when the size of the folder is too big (defines ob config.py), it will delete older half of the pictures.  
-You can change the limit size on config.py.  
-Also, it takes its data from EMBED_OpenData_clinical.csv, EMBED_OpenData_metadata.csv,  
-so you should put them in "data" folder (already exists).  
-It takes the images from EMBED s3 bucket, so you should get your own access keys and put them in s3_keys.txt  
-(alreadt exists and formatted with the appropriate template).  
+
+Importent things to know obout the `data_manager`'s behavior:
+- It downloads the pictures it needs to a folder "downloaded_images" (it create this folter automatically).
+  Obviouslly if it will need an image that was already downloaded it will take it and not redownload it, but when the size of the folder is too big (defines on      config.py), it will delete older half of the pictures. You can change the limit size on config.py.  
+- It takes its data from EMBED_OpenData_clinical.csv, EMBED_OpenData_metadata.csv, so you should put them in "data" folder (already exists).  
+- It takes the images from EMBED s3 bucket, so you should get your own access keys and put them in s3_keys.txt. (alreadt exists and formatted with the appropriate template).
+- Both csvs have lots of columns, so it refers only to the columns that defines in config.py. You can change it there if you like.
+- Because the csvs have lots of columns, there is lots of options to filter on. the existing filters defines on config.py, you can change them by putting the name of the column you want to filter on. 
 
 ### Tests
 Tests for all the endpoints.

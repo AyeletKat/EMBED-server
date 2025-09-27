@@ -51,13 +51,13 @@ The utils folder contains the `data_manager`, that merges both csvs by the instr
 - It's responsible for:
   - Extracting the unique options for the filtering.
   - Patients data demanded by the electron.
-  - The filtering functionality.  
-The data_manager downloads the pictures it needs to a folder "downloaded_images" (it create this folter automatically).  
-Obviouslly if it will need an image that was already downloaded it will take it and not redownload it,
-but when the size of the folder is too big (defines ob config.py),  
-it will delete older half of the pictures.  
+  - The filtering functionality.
+  
+The `data_manager` downloads the pictures it needs to a folder "downloaded_images" (it create this folter automatically).  
+Obviouslly if it will need an image that was already downloaded it will take it and not redownload it, but when the size of the folder is too big (defines ob config.py), it will delete older half of the pictures.  
 You can change the limit size on config.py.  
-Also, it takes its data from EMBED_OpenData_clinical.csv, EMBED_OpenData_metadata.csv so you should put them in "data" folder (already exists).  
+Also, it takes its data from EMBED_OpenData_clinical.csv, EMBED_OpenData_metadata.csv,  
+so you should put them in "data" folder (already exists).  
 It takes the images from EMBED s3 bucket, so you should get your own access keys and put them in s3_keys.txt  
 (alreadt exists and formatted with the appropriate template).  
 

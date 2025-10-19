@@ -117,7 +117,7 @@ The "data" folder in the server and the aws s3 credentials in "s3_keys.txt" in t
 
 Working with the EMBED dataset requires filing an access permission request (after receiving an approving letter the work with the aws s3 dataset storage bucket is free).
 
-1. Each user shell request permission via access request form (EMBED Dataset Access Request). (FYI ,They recommend sending the details of the ROOT aws account, not IAM).
+1. Each user shall request permission via access request form (EMBED Dataset Access Request). (FYI ,They recommend sending the details of the ROOT aws account, not IAM).
 2. Clone \ download Analyzer repository and run it. It should download the server and the electron automatically, but the viewer itself will not work yet.
 3. After receiving a confirmation email (might take a few days) you can log the aws s3 parameters in the "s3_keys.txt" file in the server repository.
 4. Download the "EMBED_OpenData_clinical.csv" and "EMBED_OpenData_metadata.csv" into the "data" folder:

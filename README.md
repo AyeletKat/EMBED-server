@@ -109,3 +109,39 @@ The server"s endpoints can be found under `filter`, `image` and `patient` folder
   }
   ```
 - `patients/filter`: Given filters params from the electron app, this endpoint returns all the image IDs that match the requested query.
+
+
+## Important!
+
+The "data" folder in the server and the aws s3 credentials in "s3_keys.txt" in the server are empty.
+
+Working with the EMBED dataset requires filing an access permission request (after receiving an approving letter the work with the aws s3 dataset storage bucket is free).
+
+1. Each user shell request permission via access request form (EMBED Dataset Access Request). (FYI ,They recommend sending the details of the ROOT aws account, not IAM).
+2. Clone \ download Analyzer repository and run it. It should download the server and the electron automatically, but the viewer itself will not work yet.
+3. After receiving a confirmation email (might take a few days) you can log the aws s3 parameters in the "s3_keys.txt" file in the server repository.
+4. Download the "EMBED_OpenData_clinical.csv" and "EMBED_OpenData_metadata.csv" into the "data" folder:
+5. Make sure the keys are active via https://us-east-1.console.aws.amazon.com/iam/home#/security_credentials and download the keys csv.
+5. Download aws-cli. https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+6. Define your account's access keys in aws-cli: 
+7. Open cmd\terminal and type the following, fill with the s3 account data, last two questions are optional, you can leave them empty.
+$ aws configure
+
+AWS Access Key ID [****************]: 
+
+AWS Secret Access Key [****************]: 
+
+Default region name [None]: 
+
+Default output format [None]:
+
+8. Now finally downloading the data: open the cmd / terminal
+9. To download the clinical data type: 
+aws s3 cp s3://embed-dataset-open/tables/EMBED_OpenData_clinical.csv <paste_destination_path>
+10. To download the metadata type: 
+aws s3 cp s3://embed-dataset-open/tables/EMBED_OpenData_metadata.csv <paste_destination_path>
+Voilà! Should be downloaded!
+If something failed, the dataset structure might have changed, try browsing through it  aws s3 ls s3://embed-dataset-open/
+11. Copy\move the metadata and clinical csv's into the "data" folder in the server.
+12. Run the analyzer again, now it should all work! Enjoy!
+
